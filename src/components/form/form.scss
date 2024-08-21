@@ -1,0 +1,231 @@
+:root {
+  --default-font-color: #1d1d20;
+  --default-background-color: white;
+  --default-offset-background-color: black;
+  --default-offset-background-color--hover: #1d1d20;
+
+  --date-selected-background-color: var(--default-offset-background-color);
+}
+
+.widget__container {
+  font-family: Helvetica, Arial, sans-serif;
+  color: var(--default-font-color);
+  width: 100%;
+  background-color: var(--default-background-color);
+  border-radius: 10px;
+  box-sizing: border-box;
+  box-shadow: 0 0 18px 8px rgba(0, 0, 0, 0.1), 0 0 32px 32px rgba(0, 0, 0, 0.08);
+  overflow: auto;
+  transition: max-height 0.2s ease;
+  * {
+    box-sizing: border-box;
+    font-size: 16px;
+  }
+  h3,
+  p,
+  input {
+    margin: 0;
+    padding: 0;
+  }
+  .widget__header {
+    padding: 1.5rem 2rem;
+    background-color: var(--default-offset-background-color);
+    color: #fff;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    text-align: center;
+    h3 {
+      font-size: 24px;
+      font-weight: 400;
+      margin-bottom: 8px;
+    }
+  }
+  #confirmation-message-container {
+    color: green;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+    #confirmation-message {
+      font-size: 1.5rem;
+    }
+  }
+  #confirmation-message-container,
+  #error-message {
+    display: none;
+    margin: 2rem 1rem 1rem 1rem;
+    padding: 0.75rem 1rem;
+    border-radius: 5px;
+    font-weight: bold;
+  }
+  #confirmation-booking-container {
+    display: flex;
+    align-items: center;
+    margin-top: 1rem;
+    margin-right: 1rem;
+  }
+  #confirmation-booking-number-of-covers {
+    margin-right: 0.5rem;
+  }
+  #error-message {
+    color: red;
+    border: 2px solid red;
+  }
+  form {
+    padding: 2rem 1rem 1.5rem;
+    .form__field__group {
+      display: flex;
+      @media screen and (min-width: 768px) {
+        gap: 2rem;
+      }
+    }
+    .form-group-left,
+    .form-group-right {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      @media screen and (min-width: 768px) {
+        align-self: flex-start;
+      }
+    }
+    .form__field {
+      margin-bottom: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      &__required {
+        display: flex;
+      }
+      &__group {
+        display: flex;
+        flex-flow: row wrap;
+        align-items: center;
+        @media screen and (min-width: 768px) {
+          flex-flow: row nowrap;
+        }
+      }
+      &.last-name {
+        @media screen and (min-width: 768px) {
+          margin-left: 1rem;
+        }
+      }
+      input,
+      textarea {
+        border: 1px solid #000000ad;
+        border-radius: 3px;
+        padding: 8px 10px;
+        background-color: var(--default-background-color);
+        resize: vertical;
+      }
+      input {
+        height: 48px;
+      }
+      textarea {
+        font-family: Helvetica, Arial, sans-serif;
+      }
+      label {
+        margin-bottom: 8px;
+        font-size: 1rem;
+      }
+    }
+  }
+  .required-field-symbol {
+    color: red;
+    font-size: 1.5rem;
+    margin-left: 0.25rem;
+  }
+  button {
+    height: 48px;
+    border-radius: 6px;
+    font-size: 18px;
+    background-color: var(--default-offset-background-color);
+    color: #fff;
+    border: 0;
+    width: 100%;
+    cursor: pointer;
+    &:hover {
+      background-color: var(--default-offset-background-color--hover);
+      color: white;
+    }
+  }
+  .info {
+    margin-bottom: 0.5rem;
+  }
+  .muted {
+    font-size: 0.75rem;
+    color: grey;
+  }
+  .time-select-container {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    margin: 2rem 0;
+    gap: 1rem;
+    @media screen and (min-width: 768px) {
+      justify-content: flex-start;
+      margin-left: 1rem 0;
+    }
+  }
+  .time-select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    &:hover {
+      cursor: pointer;
+    }
+  }
+  .wrapper {
+    height: 30%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .checkmark {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: block;
+    stroke-width: 2;
+    stroke: #fff;
+    stroke-miterlimit: 10;
+    margin: 10% auto;
+    box-shadow: inset 0px 0px 0px green;
+    animation: fill 0.4s ease-in-out 0.4s forwards,
+      scale 0.3s ease-in-out 0.9s both;
+    &__circle {
+      stroke-dasharray: 166;
+      stroke-dashoffset: 166;
+      stroke-width: 2;
+      stroke-miterlimit: 10;
+      stroke: green;
+      fill: none;
+      animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+    }
+    &__check {
+      transform-origin: 50% 50%;
+      stroke-dasharray: 48;
+      stroke-dashoffset: 48;
+      animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+    }
+  }
+
+  @keyframes stroke {
+    100% {
+      stroke-dashoffset: 0;
+    }
+  }
+  @keyframes scale {
+    0%,
+    100% {
+      transform: none;
+    }
+    50% {
+      transform: scale3d(1.1, 1.1, 1);
+    }
+  }
+  @keyframes fill {
+    100% {
+      box-shadow: inset 0px 0px 0px 30px green;
+    }
+  }
+}
