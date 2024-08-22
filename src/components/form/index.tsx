@@ -81,7 +81,6 @@ const Form = ({
   };
 
   const handleFormSubmit = (event: React.FormEvent<FormSubmission>) => {
-    console.log({ event });
     event.preventDefault();
     const form = event.currentTarget;
 
@@ -96,19 +95,6 @@ const Form = ({
     const datetime = new Date(
       date.setHours(parseInt(hours), parseInt(mins), 0)
     );
-
-    console.log({
-      day,
-      month,
-      year,
-      bookingDate: form.elements["booking[date]"].value,
-      date,
-      time,
-      hours,
-      mins,
-      datetime,
-      utc: datetime.toUTCString(),
-    });
 
     const formData: BookingPayload = {
       "widget-submission": true,
