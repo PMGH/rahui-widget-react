@@ -81,14 +81,25 @@
   }
   form {
     padding: 2rem 1rem 1.5rem;
-    .form__field__group {
+    .form-group-1 {
       display: flex;
-      @media screen and (min-width: 768px) {
-        gap: 2rem;
+      align-items: flex-end;
+      width: 100%;
+      margin-bottom: 3rem;
+      .form__field {
+        margin-bottom: 0;
+      }
+      .form__field,
+      .react-datepicker-wrapper,
+      .time-select {
+        width: 33%;
+      }
+      input,
+      select {
+        height: 48px;
       }
     }
-    .form-group-left,
-    .form-group-right {
+    .form-group-2 {
       display: flex;
       flex-direction: column;
       width: 100%;
@@ -162,17 +173,6 @@
   .muted {
     font-size: 0.75rem;
     color: grey;
-  }
-  .time-select-container {
-    display: flex;
-    flex-flow: row nowrap;
-    justify-content: center;
-    margin: 2rem 0;
-    gap: 1rem;
-    @media screen and (min-width: 768px) {
-      justify-content: flex-start;
-      margin-left: 1rem 0;
-    }
   }
   .time-select {
     width: 100%;
