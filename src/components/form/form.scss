@@ -1,3 +1,5 @@
+@import "../../styling/variables.scss";
+
 :root {
   --default-font-color: #1d1d20;
   --default-background-color: white;
@@ -5,7 +7,7 @@
   --default-offset-background-color--hover: #1d1d20;
   --date-selected-background-color: var(--default-offset-background-color);
 
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: $font-family;
   line-height: 1.5;
   font-weight: 400;
   font-synthesis: none;
@@ -89,10 +91,18 @@
       .form__field {
         margin-bottom: 0;
       }
-      .form__field,
+      .form__field {
+        width: 60px;
+        @media screen and (min-width: $tablet) {
+          width: 33%;
+        }
+      }
       .react-datepicker-wrapper,
       .time-select {
         width: 33%;
+      }
+      .react-datepicker-wrapper {
+        flex-grow: 1;
       }
       input,
       select {
@@ -140,7 +150,7 @@
         height: 48px;
       }
       textarea {
-        font-family: Helvetica, Arial, sans-serif;
+        font-family: $font-family;
       }
       label {
         margin-bottom: 8px;
