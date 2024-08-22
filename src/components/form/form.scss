@@ -3,12 +3,18 @@
   --default-background-color: white;
   --default-offset-background-color: black;
   --default-offset-background-color--hover: #1d1d20;
-
   --date-selected-background-color: var(--default-offset-background-color);
+
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .widget__container {
-  font-family: Helvetica, Arial, sans-serif;
   color: var(--default-font-color);
   width: 100%;
   background-color: var(--default-background-color);
@@ -26,11 +32,11 @@
   input {
     margin: 0;
     padding: 0;
+    color: var(--default-font-color);
   }
   .widget__header {
     padding: 1.5rem 2rem;
     background-color: var(--default-offset-background-color);
-    color: #fff;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     text-align: center;
@@ -38,6 +44,7 @@
       font-size: 24px;
       font-weight: 400;
       margin-bottom: 8px;
+      color: white;
     }
   }
   #confirmation-message-container {
@@ -135,7 +142,7 @@
     font-size: 1.5rem;
     margin-left: 0.25rem;
   }
-  button {
+  button:not(.react-datepicker__navigation) {
     height: 48px;
     border-radius: 6px;
     font-size: 18px;
@@ -226,6 +233,21 @@
   @keyframes fill {
     100% {
       box-shadow: inset 0px 0px 0px 30px green;
+    }
+  }
+}
+
+.widget__container form {
+  .react-datepicker__input-container {
+    .react-datepicker__calendar-icon {
+      padding: 15px 0.75rem;
+    }
+    input {
+      width: 100%;
+      padding: 1rem 2.25rem;
+      &:hover {
+        cursor: pointer;
+      }
     }
   }
 }
