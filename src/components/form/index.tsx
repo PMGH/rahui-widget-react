@@ -1,6 +1,6 @@
 import { ReactNode, useState } from "react";
 import DatePicker from "react-datepicker";
-import { formattedTodayDate, timeOptionsAsHtml } from "../../helpers";
+import { timeOptionsAsHtml } from "../../helpers";
 import Select from "./Select";
 
 import "react-datepicker/dist/react-datepicker.css";

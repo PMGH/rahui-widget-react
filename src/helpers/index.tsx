@@ -4,11 +4,6 @@ export const padWithZeros = (number: number) => {
   return number < 10 ? String(number).padStart(2, "0") : String(number);
 };
 
-const today = new Date();
-export const formattedTodayDate = `${today.getFullYear()}-${padWithZeros(
-  today.getMonth() + 1
-)}-${padWithZeros(today.getDate())}`;
-
 export const range = ({
   start,
   end,
