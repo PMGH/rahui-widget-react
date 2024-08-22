@@ -11,7 +11,6 @@ import * as calendarSvg from "../../assets/calendar.svg";
 type FormProps = {
   buttonText?: string;
   formClass?: string;
-  datePickerHiddenInputId?: string;
   datePickerId?: string;
   heading?: string;
   maxCoversPerBooking?: number;
@@ -22,7 +21,6 @@ type FormProps = {
 const Form = ({
   buttonText = "Book",
   formClass = "",
-  datePickerHiddenInputId = "hidden-datepicker-input-id",
   heading = "Reserve a table",
   maxCoversPerBooking,
   timePickerId = "timepicker-id",
@@ -93,7 +91,7 @@ const Form = ({
           type="hidden"
           id="widget-submission"
           name="widget-submission"
-          value="true"
+          defaultValue="true"
         ></input>
         <div className="form-group-1">
           <div className="form__field form__field__required">
@@ -113,7 +111,7 @@ const Form = ({
               name="booking[number_of_covers]"
               placeholder="1"
               min="1"
-              value="2"
+              defaultValue="2"
               required
             />
           </div>
@@ -125,15 +123,6 @@ const Form = ({
             showIcon
             icon={calendarSvg as unknown as ReactNode}
           />
-          <div className="form__field__required">
-            <input
-              type="hidden"
-              id={datePickerHiddenInputId}
-              name="booking[date]"
-              required
-              value={formattedTodayDate}
-            ></input>
-          </div>
           <Select
             id={timePickerId}
             name="booking[time]"
