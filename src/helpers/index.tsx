@@ -45,7 +45,11 @@ export const timeOptionsAsHtml = ({
       const hourStr = padWithZeros(hour);
       const minStr = padWithZeros(min);
       const timeStr = `${hourStr}:${minStr}`;
-      return <option value={timeStr}>{timeStr}</option>;
+      return (
+        <option key={timeStr} value={timeStr}>
+          {timeStr}
+        </option>
+      );
     });
   });
 };
