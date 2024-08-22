@@ -60,6 +60,10 @@ const Form = ({
   const [startDate, setStartDate] = useState(new Date());
   const [firstNameRequired, setFirstNameRequired] = useState(true);
   const [lastNameRequired, setLastNameRequired] = useState(true);
+  const [errorMessage, setErrorMessage] = useState(
+    "Sorry something went wrong, please try again."
+  );
+  const [isError, setIsError] = useState(false);
 
   const isPastDate = (date: Date) => {
     const now = new Date();
@@ -83,7 +87,6 @@ const Form = ({
   const handleFormSubmit = (event: React.FormEvent<FormSubmission>) => {
     event.preventDefault();
     const form = event.currentTarget;
-
     const dateValue = form.elements["booking[date]"].value;
     const day = parseInt(dateValue.split("/")[0]);
     const month = parseInt(dateValue.split("/")[1]) - 1; // zero index months
@@ -95,6 +98,16 @@ const Form = ({
     const datetime = new Date(
       date.setHours(parseInt(hours), parseInt(mins), 0)
     );
+
+    if (
+      !dateValue ||
+      isNaN(date?.getTime()) ||
+      !datetime ||
+      isNaN(datetime?.getTime())
+    ) {
+      setErrorMessage("Ensure you have selected a date and time");
+      setIsError(true);
+    }
 
     const formData: BookingPayload = {
       "widget-submission": true,
@@ -119,9 +132,7 @@ const Form = ({
         <h3>{heading}</h3>
       </header>
 
-      <div id="error-message">
-        Sorry, something went wrong. Please try again.
-      </div>
+      {isError && <div id="error-message">{errorMessage}</div>}
 
       <div id="confirmation-message-container">
         <div className="wrapper">
