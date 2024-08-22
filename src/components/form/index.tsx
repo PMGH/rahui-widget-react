@@ -18,8 +18,39 @@ type FormProps = {
   widgetPreview?: boolean;
 };
 
+interface FormElements extends HTMLFormControlsCollection {
+  "booking[number_of_covers]": HTMLInputElement;
+  "booking[date]": HTMLInputElement;
+  "booking[time]": HTMLInputElement;
+  "customer[first_name]"?: HTMLInputElement;
+  "customer[last_name]"?: HTMLInputElement;
+  "customer[email]": HTMLInputElement;
+  "customer[phone]"?: HTMLInputElement;
+  "booking[notes]"?: HTMLInputElement;
+}
+
+type BookingPayload = {
+  "widget-submission": boolean;
+  booking: {
+    number_of_covers: string;
+    datetime: string;
+    notes: string;
+  };
+  customer: {
+    first_name: string;
+    last_name: string;
+    email: string;
+    phone: string;
+  };
+};
+
+interface FormSubmission extends HTMLFormElement {
+  readonly elements: FormElements;
+}
+
 const Form = ({
   buttonText = "Book",
+  datePickerId = "datepicker-id",
   formClass = "",
   heading = "Reserve a table",
   maxCoversPerBooking,
@@ -37,14 +68,63 @@ const Form = ({
     return comparableDatetime.getTime() > comparableDatetimeNow.getTime();
   };
 
-  const handleFirstNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const hasFirstNameValue = Boolean(e?.target?.value?.length);
+  const handleFirstNameChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const hasFirstNameValue = Boolean(event?.target?.value?.length);
     setLastNameRequired(!hasFirstNameValue);
   };
 
-  const handleLastNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const hasLastNameValue = Boolean(e?.target?.value?.length);
+  const handleLastNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const hasLastNameValue = Boolean(event?.target?.value?.length);
     setFirstNameRequired(!hasLastNameValue);
+  };
+
+  const handleFormSubmit = (event: React.FormEvent<FormSubmission>) => {
+    console.log({ event });
+    event.preventDefault();
+    const form = event.currentTarget;
+
+    const dateValue = form.elements["booking[date]"].value;
+    const day = parseInt(dateValue.split("/")[0]);
+    const month = parseInt(dateValue.split("/")[1]) - 1; // zero index months
+    const year = parseInt(dateValue.split("/")[2]);
+    const date = new Date(year, month, day);
+    const time = form.elements["booking[time]"].value;
+    const hours = time.split(":")[0];
+    const mins = time.split(":")[1];
+    const datetime = new Date(
+      date.setHours(parseInt(hours), parseInt(mins), 0)
+    );
+
+    console.log({
+      day,
+      month,
+      year,
+      bookingDate: form.elements["booking[date]"].value,
+      date,
+      time,
+      hours,
+      mins,
+      datetime,
+      utc: datetime.toUTCString(),
+    });
+
+    const formData: BookingPayload = {
+      "widget-submission": true,
+      booking: {
+        number_of_covers: form.elements["booking[number_of_covers]"].value,
+        datetime: datetime.toUTCString(),
+        notes: form.elements["booking[notes]"]?.value || "",
+      },
+      customer: {
+        first_name: form.elements["customer[first_name]"]?.value || "",
+        last_name: form.elements["customer[last_name]"]?.value || "",
+        email: form.elements["customer[email]"]?.value || "",
+        phone: form.elements["customer[phone]"]?.value || "",
+      },
+    };
+    console.log({ form, formData });
   };
 
   return (
@@ -86,7 +166,7 @@ const Form = ({
         </div>
       </div>
 
-      <form className={formClass}>
+      <form className={formClass} onSubmit={handleFormSubmit}>
         <input
           type="hidden"
           id="widget-submission"
@@ -116,6 +196,8 @@ const Form = ({
             />
           </div>
           <DatePicker
+            id={datePickerId}
+            name="booking[date]"
             selected={startDate}
             onChange={(date) => date && setStartDate(date)}
             dateFormat="dd/MM/yyyy"
