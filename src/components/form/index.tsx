@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import DatePicker from "react-datepicker";
 import { formattedTodayDate, timeOptionsAsHtml } from "../../helpers";
 import Select from "./Select";
@@ -29,12 +29,24 @@ const Form = ({
   widgetPreview = false,
 }: FormProps) => {
   const [startDate, setStartDate] = useState(new Date());
+  const [firstNameRequired, setFirstNameRequired] = useState(true);
+  const [lastNameRequired, setLastNameRequired] = useState(true);
 
   const isPastDate = (date: Date) => {
     const now = new Date();
     const comparableDatetimeNow = new Date(now.setHours(0, 0, 0));
     const comparableDatetime = new Date(date.setHours(15, 0, 0));
     return comparableDatetime.getTime() > comparableDatetimeNow.getTime();
+  };
+
+  const handleFirstNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const hasFirstNameValue = Boolean(e?.target?.value?.length);
+    setLastNameRequired(!hasFirstNameValue);
+  };
+
+  const handleLastNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const hasLastNameValue = Boolean(e?.target?.value?.length);
+    setFirstNameRequired(!hasLastNameValue);
   };
 
   return (
@@ -111,7 +123,7 @@ const Form = ({
             dateFormat="dd/MM/yyyy"
             filterDate={isPastDate}
             showIcon
-            icon={calendarSvg}
+            icon={calendarSvg as unknown as ReactNode}
           />
           <div className="form__field__required">
             <input
@@ -140,37 +152,43 @@ const Form = ({
               <div className="form__field">
                 <div className="form__field__required">
                   <label htmlFor="customer[first_name]">First name</label>
-                  <span
-                    className="required-field-symbol"
-                    id="customer_first_name_required_symbol"
-                  >
-                    *
-                  </span>
+                  {firstNameRequired && (
+                    <span
+                      className="required-field-symbol"
+                      id="customer_first_name_required_symbol"
+                    >
+                      *
+                    </span>
+                  )}
                 </div>
                 <input
                   type="text"
                   id="customer_first_name"
                   name="customer[first_name]"
                   placeholder="Enter your first name"
-                  required
+                  required={firstNameRequired}
+                  onChange={handleFirstNameChange}
                 />
               </div>
               <div className="form__field last-name">
                 <div className="form__field__required">
                   <label htmlFor="customer[last_name]">Last name</label>
-                  <span
-                    className="required-field-symbol"
-                    id="customer_last_name_required_symbol"
-                  >
-                    *
-                  </span>
+                  {lastNameRequired && (
+                    <span
+                      className="required-field-symbol"
+                      id="customer_last_name_required_symbol"
+                    >
+                      *
+                    </span>
+                  )}
                 </div>
                 <input
                   type="text"
                   id="customer_last_name"
                   name="customer[last_name]"
                   placeholder="Enter your last name"
-                  required
+                  required={lastNameRequired}
+                  onChange={handleLastNameChange}
                 />
               </div>
             </div>
