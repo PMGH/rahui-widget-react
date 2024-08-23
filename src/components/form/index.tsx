@@ -1,6 +1,6 @@
 import { ReactNode, useState } from "react";
 import DatePicker from "react-datepicker";
-import { timeOptionsAsHtml } from "../../helpers";
+import { coversOptionsAsHtml, timeOptionsAsHtml } from "../../helpers";
 import Select from "./Select";
 
 import "react-datepicker/dist/react-datepicker.css";
@@ -171,28 +171,15 @@ const Form = ({
           defaultValue="true"
         ></input>
         <div className="form-group-1">
-          <div className="form__field form__field__required">
-            <div className="form__field__required">
-              <label
-                id="number_of_covers_label"
-                htmlFor="booking[number_of_covers]"
-              >
-                Guests{" "}
-                {maxCoversPerBooking ? ` (Max: ${maxCoversPerBooking})` : ""}
-              </label>
-              <span className="required-field-symbol">*</span>
-            </div>
-            <input
-              id="number_of_covers"
-              className="main-booking-input main-booking-input-1"
-              name="booking[number_of_covers]"
-              type="number"
-              placeholder="1"
-              min="1"
-              defaultValue="2"
-              required
-            />
-          </div>
+          <Select
+            id="number_of_covers"
+            className="main-booking-input main-booking-input-1 number-of-covers-select"
+            name="booking[number_of_covers]"
+            required
+            options={coversOptionsAsHtml({
+              max: maxCoversPerBooking || 15,
+            })}
+          ></Select>
           <DatePicker
             id={datePickerId}
             className="main-booking-input main-booking-input-2"

@@ -108,7 +108,7 @@
           width: 33%;
         }
       }
-      .form__field,
+      .number-of-covers-select,
       .react-datepicker-wrapper,
       .time-select {
         @media screen and (min-width: $tablet) {
@@ -217,6 +217,7 @@
     font-size: 0.75rem;
     color: grey;
   }
+  .number-of-covers-select,
   .time-select {
     @include form-input;
 

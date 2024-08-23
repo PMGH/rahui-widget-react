@@ -48,3 +48,13 @@ export const timeOptionsAsHtml = ({
     });
   });
 };
+
+export const coversOptionsAsHtml = ({ max }: { max: number }): ReactNode[] => {
+  return range({ start: 1, end: max + 1 }).map((value) => {
+    return (
+      <option key={value} value={value}>
+        {value} {value < 2 ? "guest" : "guests"}
+      </option>
+    );
+  });
+};
