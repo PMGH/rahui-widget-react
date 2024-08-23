@@ -1,5 +1,18 @@
 @import "../../styling/variables.scss";
 
+@mixin booking-input {
+  border: 2px solid green;
+  border-radius: 5px;
+}
+
+@mixin form-input {
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-bottom: 2px solid green;
+  border-radius: 0;
+}
+
 :root {
   --default-font-color: #1d1d20;
   --default-background-color: white;
@@ -89,24 +102,38 @@
       width: 100%;
       margin-bottom: 3rem;
       .form__field {
+        width: 70px;
         margin-bottom: 0;
-      }
-      .form__field {
-        width: 60px;
         @media screen and (min-width: $tablet) {
           width: 33%;
         }
       }
+      .form__field,
       .react-datepicker-wrapper,
       .time-select {
-        width: 33%;
+        @media screen and (min-width: $tablet) {
+          width: 33%;
+        }
+      }
+      .main-booking-input {
+        @include booking-input;
+        height: 48px;
+      }
+      .main-booking-input-1 {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+      }
+      .main-booking-input-2 {
+        border-radius: 0;
+        border-left: none;
+        border-right: none;
+      }
+      .main-booking-input-3 {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
       }
       .react-datepicker-wrapper {
         flex-grow: 1;
-      }
-      input,
-      select {
-        height: 48px;
       }
     }
     .form-group-2 {
@@ -151,10 +178,16 @@
       }
       textarea {
         font-family: $font-family;
+        height: 48px;
       }
       label {
         margin-bottom: 8px;
         font-size: 1rem;
+      }
+      input,
+      textarea,
+      select {
+        @include form-input;
       }
     }
   }
@@ -185,7 +218,8 @@
     color: grey;
   }
   .time-select {
-    width: 100%;
+    @include form-input;
+
     padding: 0.75rem 1rem;
     &:hover {
       cursor: pointer;
@@ -255,6 +289,11 @@
     input {
       width: 100%;
       padding: 1rem 2.25rem;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+      border-bottom: 2px solid green;
+      border-radius: 0;
       &:hover {
         cursor: pointer;
       }

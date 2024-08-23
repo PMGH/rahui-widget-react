@@ -183,9 +183,10 @@ const Form = ({
               <span className="required-field-symbol">*</span>
             </div>
             <input
-              type="number"
               id="number_of_covers"
+              className="main-booking-input main-booking-input-1"
               name="booking[number_of_covers]"
+              type="number"
               placeholder="1"
               min="1"
               defaultValue="2"
@@ -194,6 +195,7 @@ const Form = ({
           </div>
           <DatePicker
             id={datePickerId}
+            className="main-booking-input main-booking-input-2"
             name="booking[date]"
             selected={startDate}
             onChange={(date) => date && setStartDate(date)}
@@ -204,9 +206,9 @@ const Form = ({
           />
           <Select
             id={timePickerId}
+            className="main-booking-input main-booking-input-3 time-select"
             name="booking[time]"
             required
-            className="time-select"
             options={timeOptionsAsHtml({
               openAt: 6,
               closeAt: 20,
