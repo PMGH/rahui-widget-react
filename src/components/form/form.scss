@@ -1,7 +1,24 @@
 @import "../../styling/variables.scss";
 
+:root {
+  --default-input-color: #{$grey-50};
+  --default-font-color: #{$black};
+  --default-background-color: #{$white};
+  --default-offset-background-color: black;
+  --default-offset-background-color--hover: #{$black};
+  --date-selected-background-color: var(--default-offset-background-color);
+
+  font-family: $font-family;
+  line-height: 1.5;
+  font-weight: 400;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 @mixin booking-input {
-  border: 2px solid green;
+  border: 2px solid var(--default-input-color);
   border-radius: 5px;
 }
 
@@ -9,7 +26,7 @@
   border-top: none;
   border-left: none;
   border-right: none;
-  border-bottom: 2px solid green;
+  border-bottom: 2px solid var(--default-input-color);
   border-radius: 0;
 }
 
@@ -32,22 +49,6 @@
     box-shadow: $box-shadow-button;
     transition: all 0.5s;
   }
-}
-
-:root {
-  --default-font-color: #1d1d20;
-  --default-background-color: white;
-  --default-offset-background-color: black;
-  --default-offset-background-color--hover: #1d1d20;
-  --date-selected-background-color: var(--default-offset-background-color);
-
-  font-family: $font-family;
-  line-height: 1.5;
-  font-weight: 400;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 .widget__container {
@@ -84,7 +85,7 @@
     }
   }
   #confirmation-message-container {
-    color: green;
+    color: $green;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -112,8 +113,8 @@
     margin-right: 0.5rem;
   }
   #error-message {
-    color: red;
-    border: 2px solid red;
+    color: $red;
+    border: 2px solid $red;
   }
   form {
     padding: 2rem 1rem 1.5rem;
@@ -162,7 +163,7 @@
       display: flex;
       flex-direction: column;
       width: 100%;
-      @media screen and (min-width: 768px) {
+      @media screen and (min-width: $tablet) {
         align-self: flex-start;
       }
     }
@@ -175,12 +176,12 @@
         display: flex;
         flex-flow: row wrap;
         align-items: center;
-        @media screen and (min-width: 768px) {
+        @media screen and (min-width: $tablet) {
           flex-flow: row nowrap;
         }
       }
       &.last-name {
-        @media screen and (min-width: 768px) {
+        @media screen and (min-width: $tablet) {
           margin-left: 2rem;
         }
       }
@@ -257,7 +258,7 @@
     border-radius: 50%;
     display: block;
     stroke-width: 2;
-    stroke: #fff;
+    stroke: $white;
     stroke-miterlimit: 10;
     margin: 10% auto;
     box-shadow: inset 0px 0px 0px green;
@@ -268,7 +269,7 @@
       stroke-dashoffset: 166;
       stroke-width: 2;
       stroke-miterlimit: 10;
-      stroke: green;
+      stroke: $green;
       fill: none;
       animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
     }
@@ -296,7 +297,7 @@
   }
   @keyframes fill {
     100% {
-      box-shadow: inset 0px 0px 0px 30px green;
+      box-shadow: inset 0px 0px 0px 30px $green;
     }
   }
 }
@@ -312,7 +313,7 @@
       border-top: none;
       border-left: none;
       border-right: none;
-      border-bottom: 2px solid green;
+      border-bottom: 2px solid $green;
       border-radius: 0;
       &:hover {
         cursor: pointer;
