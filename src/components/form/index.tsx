@@ -211,7 +211,11 @@ const Form = ({
                   type="text"
                   id="customer_first_name"
                   name="customer[first_name]"
-                  placeholder="Enter your first name"
+                  placeholder={
+                    firstNameRequired
+                      ? "Enter your first name *"
+                      : "Enter your first name"
+                  }
                   required={firstNameRequired}
                   onChange={handleFirstNameChange}
                 />
@@ -221,7 +225,11 @@ const Form = ({
                   type="text"
                   id="customer_last_name"
                   name="customer[last_name]"
-                  placeholder="Enter your last name"
+                  placeholder={
+                    lastNameRequired
+                      ? "Enter your last name *"
+                      : "Enter your last name"
+                  }
                   required={lastNameRequired}
                   onChange={handleLastNameChange}
                 />
@@ -232,7 +240,8 @@ const Form = ({
                 type="email"
                 id="email"
                 name="customer[email]"
-                placeholder="Enter your email address"
+                placeholder="Enter your email address *"
+                required
               />
               <p className="info muted">
                 We send the booking confirmation to this email address
