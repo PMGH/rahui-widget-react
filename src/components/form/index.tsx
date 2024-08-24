@@ -207,17 +207,6 @@ const Form = ({
           <section className="customer-details">
             <div className="form__field__group">
               <div className="form__field">
-                <div className="form__field__required">
-                  <label htmlFor="customer[first_name]">First name</label>
-                  {firstNameRequired && (
-                    <span
-                      className="required-field-symbol"
-                      id="customer_first_name_required_symbol"
-                    >
-                      *
-                    </span>
-                  )}
-                </div>
                 <input
                   type="text"
                   id="customer_first_name"
@@ -228,17 +217,6 @@ const Form = ({
                 />
               </div>
               <div className="form__field last-name">
-                <div className="form__field__required">
-                  <label htmlFor="customer[last_name]">Last name</label>
-                  {lastNameRequired && (
-                    <span
-                      className="required-field-symbol"
-                      id="customer_last_name_required_symbol"
-                    >
-                      *
-                    </span>
-                  )}
-                </div>
                 <input
                   type="text"
                   id="customer_last_name"
@@ -250,35 +228,29 @@ const Form = ({
               </div>
             </div>
             <div className="form__field">
-              <div className="form__field__required">
-                <label htmlFor="customer[email]">Email</label>
-                <span className="required-field-symbol">*</span>
-              </div>
-              <p className="info muted">
-                We send the booking confirmation to this email address
-              </p>
               <input
                 type="email"
                 id="email"
                 name="customer[email]"
                 placeholder="Enter your email address"
               />
+              <p className="info muted">
+                We send the booking confirmation to this email address
+              </p>
             </div>
             <div className="form__field">
-              <label htmlFor="customer[phone]">Phone number</label>
-              <p className="info muted">
-                We may use this to contact you about your booking
-              </p>
               <input
                 type="phone"
                 id="phone"
                 name="customer[phone]"
                 placeholder="Enter your phone number"
               />
+              <p className="info muted">
+                We may use this phone number to contact you about your booking
+              </p>
             </div>
           </section>
           <div className="form__field">
-            <label htmlFor="booking[notes]">Notes</label>
             <textarea
               id="notes"
               name="booking[notes]"
