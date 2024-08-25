@@ -8,11 +8,16 @@ import "./form.scss";
 
 import * as calendarSvg from "../../assets/calendar.svg";
 
+import { RahuiBackend } from "../../backend/server";
+import { BookingPayload } from "../../backend/types";
+
 type FormProps = {
+  apiKey?: string;
   buttonText?: string;
-  formClass?: string;
   datePickerId?: string;
+  formClass?: string;
   heading?: string;
+  localServerBaseUrl?: string;
   maxCoversPerBooking?: number;
   timePickerId?: string;
   widgetPreview?: boolean;
@@ -29,30 +34,17 @@ interface FormElements extends HTMLFormControlsCollection {
   "booking[notes]"?: HTMLInputElement;
 }
 
-type BookingPayload = {
-  "widget-submission": boolean;
-  booking: {
-    number_of_covers: string;
-    datetime: string;
-    notes: string;
-  };
-  customer: {
-    first_name: string;
-    last_name: string;
-    email: string;
-    phone: string;
-  };
-};
-
 interface FormSubmission extends HTMLFormElement {
   readonly elements: FormElements;
 }
 
 const Form = ({
+  apiKey = "",
   buttonText = "Book",
   datePickerId = "datepicker-id",
   formClass = "",
   heading = "Reserve a table",
+  localServerBaseUrl,
   maxCoversPerBooking,
   timePickerId = "timepicker-id",
   widgetPreview = false,
@@ -84,7 +76,7 @@ const Form = ({
     setFirstNameRequired(!hasLastNameValue);
   };
 
-  const handleFormSubmit = (event: React.FormEvent<FormSubmission>) => {
+  const handleFormSubmit = async (event: React.FormEvent<FormSubmission>) => {
     event.preventDefault();
     const form = event.currentTarget;
     const dateValue = form.elements["booking[date]"].value;
@@ -109,7 +101,7 @@ const Form = ({
       setIsError(true);
     }
 
-    const formData: BookingPayload = {
+    const payload: BookingPayload = {
       "widget-submission": true,
       booking: {
         number_of_covers: form.elements["booking[number_of_covers]"].value,
@@ -123,7 +115,30 @@ const Form = ({
         phone: form.elements["customer[phone]"]?.value || "",
       },
     };
-    console.log({ form, formData });
+    console.log({ form, payload });
+
+    const Server = new RahuiBackend({
+      apiKey,
+      localServerBaseUrl,
+    });
+    await Server.postBooking({
+      payload,
+      beforeRequest: resetErrorMessage,
+      onSuccess: handlePostBookingSuccess,
+      onFailure: handlePostBookingFailure,
+    });
+  };
+
+  const resetErrorMessage = () => {
+    console.log("resetErrorMessage");
+  };
+
+  const handlePostBookingSuccess = () => {
+    console.log("handlePostBookingSuccess");
+  };
+
+  const handlePostBookingFailure = (error: any) => {
+    console.log("handlePostBookingFailure", { error });
   };
 
   return (
