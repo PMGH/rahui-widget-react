@@ -1,18 +1,23 @@
 import Form from "../components/form";
 import { WidgetConfig, WidgetSettings } from "../types/types";
 import { RahuiBackend } from "../backend/server";
+import { Component } from "react";
+import ReactDOM from "react-dom/client";
+import React from "react";
 
-class Widget {
+class Widget extends Component {
   // API
   apiKey = "";
   apiBaseUrl = "";
   defaultRequestHeaders: {};
   apiServer: RahuiBackend;
   // User Defined Widget Settings
+  root = ReactDOM.createRoot(document.getElementById("root") as Element);
   rootElementId = "";
   widgetPreview = false;
-  heading = "";
+  headingText = "";
   buttonText = "";
+  formClass = "";
   maxCoversPerBooking: number | undefined;
   // Development
   rootElementIdOverride;
@@ -21,9 +26,19 @@ class Widget {
   constructor({
     apiKey,
     localServerBaseUrl,
+    root,
     rootElementIdOverride,
     widgetPreview,
   }: WidgetConfig) {
+    super({
+      apiKey,
+      localServerBaseUrl,
+      root,
+      rootElementIdOverride,
+      widgetPreview,
+    });
+
+    this.root;
     this.rootElementId;
     this.apiKey = apiKey;
     this.apiBaseUrl = localServerBaseUrl || "https://www.rahui-booking.com";
@@ -38,8 +53,9 @@ class Widget {
     });
     this.rootElementIdOverride = rootElementIdOverride;
     this.widgetPreview = widgetPreview || false;
-    this.heading = "Book a table";
+    this.headingText = "Book a table";
     this.buttonText = "Create booking";
+    this.formClass = "rahui-booking-form";
 
     this.initialize();
   }
@@ -69,30 +85,33 @@ class Widget {
       root_element_id,
     });
     this.buttonText = button_text || this.buttonText;
-    this.heading = heading_text || this.heading;
+    this.headingText = heading_text || this.headingText;
     this.rootElementId =
       this.rootElementIdOverride || root_element_id || this.rootElementId;
     this.maxCoversPerBooking = max_covers_per_booking;
 
-    this.setupWidget();
+    this.renderWidget();
   };
 
   handleSettingsRequestFailure = () => {
     console.error("handleSettingsRequestFailure");
   };
 
-  setupWidget = () => {
-    console.log("setupWidget", { _this: this });
-  };
-
-  initForDevelopment = () => {
-    return (
-      <Form
-        apiKey={this.apiKey}
-        localServerBaseUrl="http://localhost:3001"
-      ></Form>
+  renderWidget() {
+    this.root.render(
+      <React.StrictMode>
+        <Form
+          apiKey={this.apiKey}
+          buttonText={this.buttonText}
+          formClass={this.formClass}
+          localServerBaseUrl={this.localServerBaseUrl}
+          headingText={this.headingText}
+          maxCoversPerBooking={this.maxCoversPerBooking}
+          widgetPreview={this.widgetPreview}
+        ></Form>
+      </React.StrictMode>
     );
-  };
+  }
 }
 
 export default Widget;

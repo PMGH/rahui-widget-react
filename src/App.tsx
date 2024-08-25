@@ -15,6 +15,7 @@ function App() {
       localServerBaseUrl: "http://localhost:3001",
     });
   }
+
   window.RahuiWidget = Widget;
 }
 

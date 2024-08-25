@@ -1,3 +1,5 @@
+import { Root } from "react-dom/client";
+
 declare global {
   interface Window {
     RahuiWidget: any;
@@ -8,6 +10,7 @@ window.RahuiWidget = window.RahuiWidget || {};
 export type WidgetConfig = {
   apiKey: string;
   localServerBaseUrl?: string;
+  root?: Root;
   rootElementIdOverride?: string;
   widgetPreview?: boolean;
 };

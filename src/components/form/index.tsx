@@ -14,12 +14,10 @@ import { BookingPayload } from "../../backend/types";
 type FormProps = {
   apiKey?: string;
   buttonText?: string;
-  datePickerId?: string;
   formClass?: string;
-  heading?: string;
+  headingText?: string;
   localServerBaseUrl?: string;
   maxCoversPerBooking?: number;
-  timePickerId?: string;
   widgetPreview?: boolean;
 };
 
@@ -41,12 +39,10 @@ interface FormSubmission extends HTMLFormElement {
 const Form = ({
   apiKey = "",
   buttonText = "Book",
-  datePickerId = "datepicker-id",
   formClass = "",
-  heading = "Reserve a table",
+  headingText = "Reserve a table",
   localServerBaseUrl,
   maxCoversPerBooking,
-  timePickerId = "timepicker-id",
   widgetPreview = false,
 }: FormProps) => {
   const [startDate, setStartDate] = useState(new Date());
@@ -144,7 +140,7 @@ const Form = ({
   return (
     <section id="rahui-widget" className="widget__container">
       <header className="widget__header">
-        <h3>{heading}</h3>
+        <h3>{headingText}</h3>
       </header>
 
       {isError && <div id="error-message">{errorMessage}</div>}
@@ -196,7 +192,7 @@ const Form = ({
             })}
           ></Select>
           <DatePicker
-            id={datePickerId}
+            id="datepicker-id"
             className="main-booking-input main-booking-input-2"
             name="booking[date]"
             selected={startDate}
@@ -207,7 +203,7 @@ const Form = ({
             icon={calendarSvg as unknown as ReactNode}
           />
           <Select
-            id={timePickerId}
+            id="timepicker-id"
             className="main-booking-input main-booking-input-3 time-select"
             name="booking[time]"
             required
