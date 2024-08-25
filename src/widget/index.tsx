@@ -94,7 +94,7 @@ class Widget extends Component {
   };
 
   handleSettingsRequestFailure = () => {
-    console.error("handleSettingsRequestFailure");
+    console.error("Settings request failed");
   };
 
   renderWidget() {
