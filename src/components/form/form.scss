@@ -233,10 +233,6 @@
   .info {
     margin-top: 0.5rem;
   }
-  .muted {
-    font-size: 0.75rem;
-    color: grey;
-  }
   .number-of-covers-select,
   .time-select {
     @include form-input;

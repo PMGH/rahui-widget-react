@@ -5,6 +5,8 @@ import { Component } from "react";
 import ReactDOM from "react-dom/client";
 import React from "react";
 
+import "../styling/common.scss";
+
 class Widget extends Component {
   // API
   apiKey = "";

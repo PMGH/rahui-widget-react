@@ -2,6 +2,7 @@ import { ReactNode, useState } from "react";
 import DatePicker from "react-datepicker";
 import { coversOptionsAsHtml, timeOptionsAsHtml } from "../../helpers";
 import Select from "./Select";
+import PoweredBy from "../powered-by";
 
 import "react-datepicker/dist/react-datepicker.css";
 import "./form.scss";
@@ -284,6 +285,8 @@ const Form = ({
           {buttonText}
         </button>
       </form>
+
+      <PoweredBy />
     </section>
   );
 };
