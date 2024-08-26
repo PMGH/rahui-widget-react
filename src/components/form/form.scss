@@ -84,6 +84,13 @@
       color: white;
     }
   }
+  #confirmation-message-container,
+  #error-message {
+    margin: 2rem 1rem 1rem 1rem;
+    padding: 0.75rem 1rem;
+    border-radius: 5px;
+    font-weight: bold;
+  }
   #confirmation-message-container {
     color: $green;
     display: flex;
@@ -95,21 +102,23 @@
       font-size: 1.5rem;
     }
   }
-  #confirmation-message-container,
-  #error-message {
-    margin: 2rem 1rem 1rem 1rem;
-    padding: 0.75rem 1rem;
-    border-radius: 5px;
-    font-weight: bold;
-  }
   #confirmation-booking-container {
     display: flex;
     align-items: center;
+    flex-direction: column;
     margin-top: 1rem;
     margin-right: 1rem;
-  }
-  #confirmation-booking-number-of-covers {
-    margin-right: 0.5rem;
+    text-align: center;
+    @media screen and (min-width: $tablet) {
+      flex-direction: row;
+    }
+    #confirmation-booking-separator {
+      display: none;
+      @media screen and (min-width: $tablet) {
+        display: block;
+        margin: 0 0.5rem;
+      }
+    }
   }
   #error-message {
     color: $red;

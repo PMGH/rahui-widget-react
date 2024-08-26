@@ -9,8 +9,8 @@ const BookingConfirmation = ({
 }) => {
   const numberOfCoversMessage =
     numberOfCovers === 1
-      ? `${numberOfCovers} Person | `
-      : `${numberOfCovers} People | `;
+      ? `${numberOfCovers} Person`
+      : `${numberOfCovers} People`;
   const locale = Intl.DateTimeFormat().resolvedOptions().locale;
   const formattedDatetime = new Intl.DateTimeFormat(locale, {
     dateStyle: "full",
@@ -44,6 +44,7 @@ const BookingConfirmation = ({
         <span id="confirmation-booking-number-of-covers">
           {numberOfCoversMessage}
         </span>
+        <span id="confirmation-booking-separator">|</span>
         <span id="confirmation-booking-datetime">{formattedDatetime}</span>
       </div>
     </div>
