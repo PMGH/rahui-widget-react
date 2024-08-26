@@ -192,27 +192,29 @@ const Form = ({
               max: maxCoversPerBooking || 15,
             })}
           ></Select>
-          <DatePicker
-            id="datepicker-id"
-            className="main-booking-input main-booking-input-2"
-            name="booking[date]"
-            selected={startDate}
-            onChange={(date) => date && setStartDate(date)}
-            dateFormat="dd/MM/yyyy"
-            filterDate={isPastDate}
-            showIcon
-            icon={calendarSvg as unknown as ReactNode}
-          />
-          <Select
-            id="timepicker-id"
-            className="main-booking-input main-booking-input-3 time-select"
-            name="booking[time]"
-            required
-            options={timeOptionsAsHtml({
-              openAt: 6,
-              closeAt: 20,
-            })}
-          ></Select>
+          <div className="datetime-input-container">
+            <DatePicker
+              id="datepicker-id"
+              className="main-booking-input main-booking-input-2"
+              name="booking[date]"
+              selected={startDate}
+              onChange={(date) => date && setStartDate(date)}
+              dateFormat="dd/MM/yyyy"
+              filterDate={isPastDate}
+              showIcon
+              icon={calendarSvg as unknown as ReactNode}
+            />
+            <Select
+              id="timepicker-id"
+              className="main-booking-input main-booking-input-3 time-select"
+              name="booking[time]"
+              required
+              options={timeOptionsAsHtml({
+                openAt: 6,
+                closeAt: 20,
+              })}
+            ></Select>
+          </div>
         </div>
 
         <div className="form-group-2">
