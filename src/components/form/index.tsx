@@ -3,6 +3,7 @@ import DatePicker from "react-datepicker";
 import { coversOptionsAsHtml, timeOptionsAsHtml } from "../../helpers";
 import Select from "./Select";
 import PoweredBy from "../powered-by";
+import BookingConfirmation from "../booking-confirmation";
 
 import "react-datepicker/dist/react-datepicker.css";
 import "./form.scss";
@@ -46,19 +47,34 @@ const Form = ({
   maxCoversPerBooking,
   widgetPreview = false,
 }: FormProps) => {
-  const [startDate, setStartDate] = useState(new Date());
+  const formatDate = (date: Date) => {
+    const locale = Intl.DateTimeFormat().resolvedOptions().locale;
+    return new Intl.DateTimeFormat(locale).format(date);
+  };
+
+  const [numberOfCovers, setNumberOfCovers] = useState(1);
+  const [date, setDate] = useState(formatDate(new Date()));
+  const [time, setTime] = useState("06:00");
   const [firstNameRequired, setFirstNameRequired] = useState(true);
   const [lastNameRequired, setLastNameRequired] = useState(true);
+  const [isError, setIsError] = useState(false);
   const [errorMessage, setErrorMessage] = useState(
     "Sorry something went wrong, please try again."
   );
-  const [isError, setIsError] = useState(false);
+  const [isBookingConfirmed, setIsBookingConfirmed] = useState(false);
 
   const isPastDate = (date: Date) => {
     const now = new Date();
     const comparableDatetimeNow = new Date(now.setHours(0, 0, 0));
     const comparableDatetime = new Date(date.setHours(15, 0, 0));
     return comparableDatetime.getTime() > comparableDatetimeNow.getTime();
+  };
+
+  const dateFromString = (date: string) => {
+    const day = parseInt(date.split("/")[0]);
+    const month = parseInt(date.split("/")[1]) - 1; // zero index months
+    const year = parseInt(date.split("/")[2]);
+    return new Date(year, month, day);
   };
 
   const handleFirstNameChange = (
@@ -76,24 +92,9 @@ const Form = ({
   const handleFormSubmit = async (event: React.FormEvent<FormSubmission>) => {
     event.preventDefault();
     const form = event.currentTarget;
-    const dateValue = form.elements["booking[date]"].value;
-    const day = parseInt(dateValue.split("/")[0]);
-    const month = parseInt(dateValue.split("/")[1]) - 1; // zero index months
-    const year = parseInt(dateValue.split("/")[2]);
-    const date = new Date(year, month, day);
-    const time = form.elements["booking[time]"].value;
-    const hours = time.split(":")[0];
-    const mins = time.split(":")[1];
-    const datetime = new Date(
-      date.setHours(parseInt(hours), parseInt(mins), 0)
-    );
+    const datetime = getSelectedDatetime();
 
-    if (
-      !dateValue ||
-      isNaN(date?.getTime()) ||
-      !datetime ||
-      isNaN(datetime?.getTime())
-    ) {
+    if (!datetime || isNaN(datetime?.getTime())) {
       setErrorMessage("Ensure you have selected a date and time");
       setIsError(true);
     }
@@ -132,11 +133,28 @@ const Form = ({
 
   const handlePostBookingSuccess = () => {
     console.log("handlePostBookingSuccess");
+    setIsBookingConfirmed(true);
   };
 
   const handlePostBookingFailure = (error: any) => {
     console.log("handlePostBookingFailure", { error });
   };
+
+  const getSelectedDatetime = (): Date => {
+    // Date
+    const newDate = dateFromString(date);
+    debugger;
+
+    // Time
+    const hours = time.split(":")[0];
+    const mins = time.split(":")[1];
+    const datetime = new Date(
+      newDate.setHours(parseInt(hours), parseInt(mins), 0)
+    );
+    return datetime;
+  };
+
+  console.log({ date, time, numberOfCovers, isBookingConfirmed });
 
   return (
     <section id="rahui-widget" className="widget__container">
@@ -146,147 +164,130 @@ const Form = ({
 
       {isError && <div id="error-message">{errorMessage}</div>}
 
-      <div id="confirmation-message-container">
-        <div className="wrapper">
-          <svg
-            className="checkmark"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 52 52"
-          >
-            {" "}
-            <circle
-              className="checkmark__circle"
-              cx="26"
-              cy="26"
-              r="25"
-              fill="none"
-            />{" "}
-            <path
-              className="checkmark__check"
-              fill="none"
-              d="M14.1 27.2l7.1 7.2 16.7-16.8"
-            />
-          </svg>
-        </div>
-        <h3 id="confirmation-message">Booking confirmed!</h3>
-        <div id="confirmation-booking-container">
-          <span id="confirmation-booking-number-of-covers"></span>
-          <span id="confirmation-booking-datetime"></span>
-        </div>
-      </div>
+      {isBookingConfirmed && (
+        <BookingConfirmation
+          numberOfCovers={numberOfCovers}
+          datetime={getSelectedDatetime()}
+        />
+      )}
 
-      <form className={formClass} onSubmit={handleFormSubmit}>
-        <input
-          type="hidden"
-          id="widget-submission"
-          name="widget-submission"
-          defaultValue="true"
-        ></input>
-        <div className="form-group-1">
-          <Select
-            id="number_of_covers"
-            className="main-booking-input main-booking-input-1 number-of-covers-select"
-            name="booking[number_of_covers]"
-            required
-            options={coversOptionsAsHtml({
-              max: maxCoversPerBooking || 15,
-            })}
-          ></Select>
-          <div className="datetime-input-container">
-            <DatePicker
-              id="datepicker-id"
-              className="main-booking-input main-booking-input-2"
-              name="booking[date]"
-              selected={startDate}
-              onChange={(date) => date && setStartDate(date)}
-              dateFormat="dd/MM/yyyy"
-              filterDate={isPastDate}
-              showIcon
-              icon={calendarSvg as unknown as ReactNode}
-            />
+      {!isBookingConfirmed && (
+        <form className={formClass} onSubmit={handleFormSubmit}>
+          <input
+            type="hidden"
+            id="widget-submission"
+            name="widget-submission"
+            defaultValue="true"
+          ></input>
+          <div className="form-group-1">
             <Select
-              id="timepicker-id"
-              className="main-booking-input main-booking-input-3 time-select"
-              name="booking[time]"
+              id="number_of_covers"
+              className="main-booking-input main-booking-input-1 number-of-covers-select"
+              name="booking[number_of_covers]"
               required
-              options={timeOptionsAsHtml({
-                openAt: 6,
-                closeAt: 20,
+              options={coversOptionsAsHtml({
+                max: maxCoversPerBooking || 15,
               })}
+              value={numberOfCovers}
+              onChange={setNumberOfCovers}
             ></Select>
+            <div className="datetime-input-container">
+              <DatePicker
+                id="datepicker-id"
+                className="main-booking-input main-booking-input-2"
+                name="booking[date]"
+                selected={dateFromString(date)}
+                onChange={(date) => date && setDate(formatDate(date))}
+                dateFormat="dd/MM/yyyy"
+                filterDate={isPastDate}
+                showIcon
+                icon={calendarSvg as unknown as ReactNode}
+              />
+              <Select
+                id="timepicker-id"
+                className="main-booking-input main-booking-input-3 time-select"
+                name="booking[time]"
+                required
+                options={timeOptionsAsHtml({
+                  openAt: 6,
+                  closeAt: 20,
+                })}
+                onChange={(event) => setTime(event.target.value)}
+              ></Select>
+            </div>
           </div>
-        </div>
 
-        <div className="form-group-2">
-          <section className="customer-details">
-            <div className="form__field__group">
+          <div className="form-group-2">
+            <section className="customer-details">
+              <div className="form__field__group">
+                <div className="form__field">
+                  <input
+                    type="text"
+                    id="customer_first_name"
+                    name="customer[first_name]"
+                    placeholder={
+                      firstNameRequired
+                        ? "Enter your first name *"
+                        : "Enter your first name"
+                    }
+                    required={firstNameRequired}
+                    onChange={handleFirstNameChange}
+                  />
+                </div>
+                <div className="form__field last-name">
+                  <input
+                    type="text"
+                    id="customer_last_name"
+                    name="customer[last_name]"
+                    placeholder={
+                      lastNameRequired
+                        ? "Enter your last name *"
+                        : "Enter your last name"
+                    }
+                    required={lastNameRequired}
+                    onChange={handleLastNameChange}
+                  />
+                </div>
+              </div>
               <div className="form__field">
                 <input
-                  type="text"
-                  id="customer_first_name"
-                  name="customer[first_name]"
-                  placeholder={
-                    firstNameRequired
-                      ? "Enter your first name *"
-                      : "Enter your first name"
-                  }
-                  required={firstNameRequired}
-                  onChange={handleFirstNameChange}
+                  type="email"
+                  id="email"
+                  name="customer[email]"
+                  placeholder="Enter your email address *"
+                  required
                 />
+                <p className="info muted">
+                  We send the booking confirmation to this email address
+                </p>
               </div>
-              <div className="form__field last-name">
+              <div className="form__field">
                 <input
-                  type="text"
-                  id="customer_last_name"
-                  name="customer[last_name]"
-                  placeholder={
-                    lastNameRequired
-                      ? "Enter your last name *"
-                      : "Enter your last name"
-                  }
-                  required={lastNameRequired}
-                  onChange={handleLastNameChange}
+                  type="phone"
+                  id="phone"
+                  name="customer[phone]"
+                  placeholder="Enter your phone number"
                 />
+                <p className="info muted">
+                  We may use this phone number to contact you about your booking
+                </p>
               </div>
-            </div>
+            </section>
             <div className="form__field">
-              <input
-                type="email"
-                id="email"
-                name="customer[email]"
-                placeholder="Enter your email address *"
-                required
-              />
-              <p className="info muted">
-                We send the booking confirmation to this email address
-              </p>
+              <textarea
+                id="notes"
+                name="booking[notes]"
+                placeholder="Enter any additional notes"
+                rows={6}
+              ></textarea>
             </div>
-            <div className="form__field">
-              <input
-                type="phone"
-                id="phone"
-                name="customer[phone]"
-                placeholder="Enter your phone number"
-              />
-              <p className="info muted">
-                We may use this phone number to contact you about your booking
-              </p>
-            </div>
-          </section>
-          <div className="form__field">
-            <textarea
-              id="notes"
-              name="booking[notes]"
-              placeholder="Enter any additional notes"
-              rows={6}
-            ></textarea>
           </div>
-        </div>
 
-        <button type="submit" disabled={widgetPreview}>
-          {buttonText}
-        </button>
-      </form>
+          <button type="submit" disabled={widgetPreview}>
+            {buttonText}
+          </button>
+        </form>
+      )}
 
       <PoweredBy />
     </section>
