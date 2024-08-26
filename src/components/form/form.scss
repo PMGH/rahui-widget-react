@@ -1,14 +1,57 @@
+@import "../../styling/variables.scss";
+
 :root {
-  --default-font-color: #1d1d20;
+  --default-input-color: #{$grey-50};
+  --default-font-color: #{$black};
   --default-background-color: white;
   --default-offset-background-color: black;
-  --default-offset-background-color--hover: #1d1d20;
-
+  --default-offset-background-color--hover: #{$black};
   --date-selected-background-color: var(--default-offset-background-color);
+
+  font-family: $font-family;
+  line-height: 1.5;
+  font-weight: 400;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@mixin booking-input {
+  border: 2px solid var(--default-input-color);
+  border-radius: 5px;
+}
+
+@mixin form-input {
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-bottom: 2px solid var(--default-input-color);
+  border-radius: 0;
+}
+
+@mixin button-base {
+  border-radius: 100px;
+  padding: 0.5rem 1rem;
+  margin: 2rem 0;
+  height: fit-content;
+  text-decoration: none;
+  width: 100%;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 500;
+  box-sizing: border-box;
+}
+
+@mixin button-base--hover {
+  &:hover {
+    cursor: pointer;
+    box-shadow: $box-shadow-button;
+    transition: all 0.5s;
+  }
 }
 
 .widget__container {
-  font-family: Helvetica, Arial, sans-serif;
   color: var(--default-font-color);
   width: 100%;
   background-color: var(--default-background-color);
@@ -26,11 +69,11 @@
   input {
     margin: 0;
     padding: 0;
+    color: var(--default-font-color);
   }
   .widget__header {
     padding: 1.5rem 2rem;
     background-color: var(--default-offset-background-color);
-    color: #fff;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     text-align: center;
@@ -38,22 +81,22 @@
       font-size: 24px;
       font-weight: 400;
       margin-bottom: 8px;
+      color: white;
     }
   }
   #confirmation-message-container {
-    color: green;
+    color: $green;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 80vh;
+    height: 60vh;
     #confirmation-message {
       font-size: 1.5rem;
     }
   }
   #confirmation-message-container,
   #error-message {
-    display: none;
     margin: 2rem 1rem 1rem 1rem;
     padding: 0.75rem 1rem;
     border-radius: 5px;
@@ -69,23 +112,76 @@
     margin-right: 0.5rem;
   }
   #error-message {
-    color: red;
-    border: 2px solid red;
+    color: $red;
+    border: 2px solid $red;
   }
   form {
-    padding: 2rem 1rem 1.5rem;
-    .form__field__group {
-      display: flex;
-      @media screen and (min-width: 768px) {
-        gap: 2rem;
-      }
-    }
-    .form-group-left,
-    .form-group-right {
+    padding: 4rem 1rem 1.5rem;
+    .form-group-1 {
       display: flex;
       flex-direction: column;
       width: 100%;
-      @media screen and (min-width: 768px) {
+      margin-bottom: 3rem;
+      background: var(--default-background-color);
+      @media screen and (min-width: $tablet) {
+        flex-direction: row;
+        align-items: flex-end;
+        box-shadow: $box-shadow-button;
+      }
+      .datetime-input-container {
+        width: 100%;
+        display: flex;
+        margin-top: 1rem;
+        @media screen and (min-width: $tablet) {
+          margin-top: 0;
+        }
+      }
+      .form__field {
+        width: 70px;
+        margin-bottom: 0;
+        @media screen and (min-width: $tablet) {
+          width: 33%;
+        }
+      }
+      .number-of-covers-select,
+      .react-datepicker-wrapper,
+      .time-select {
+        @media screen and (min-width: $tablet) {
+          width: 33%;
+        }
+      }
+      .main-booking-input {
+        @include booking-input;
+        height: 48px;
+      }
+      .main-booking-input-1 {
+        @media screen and (min-width: $tablet) {
+          border-top-right-radius: 0;
+          border-bottom-right-radius: 0;
+        }
+      }
+      .main-booking-input-2 {
+        border-right: none;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+        @media screen and (min-width: $tablet) {
+          border-radius: 0;
+          border-left: none;
+        }
+      }
+      .main-booking-input-3 {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+      }
+      .react-datepicker-wrapper {
+        flex-grow: 1;
+      }
+    }
+    .form-group-2 {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      @media screen and (min-width: $tablet) {
         align-self: flex-start;
       }
     }
@@ -94,20 +190,17 @@
       display: flex;
       flex-direction: column;
       width: 100%;
-      &__required {
-        display: flex;
-      }
       &__group {
         display: flex;
         flex-flow: row wrap;
         align-items: center;
-        @media screen and (min-width: 768px) {
+        @media screen and (min-width: $tablet) {
           flex-flow: row nowrap;
         }
       }
       &.last-name {
-        @media screen and (min-width: 768px) {
-          margin-left: 1rem;
+        @media screen and (min-width: $tablet) {
+          margin-left: 2rem;
         }
       }
       input,
@@ -122,53 +215,46 @@
         height: 48px;
       }
       textarea {
-        font-family: Helvetica, Arial, sans-serif;
+        font-family: $font-family;
+        height: 48px;
       }
       label {
         margin-bottom: 8px;
         font-size: 1rem;
       }
+      input,
+      textarea,
+      select {
+        @include form-input;
+      }
     }
   }
-  .required-field-symbol {
-    color: red;
-    font-size: 1.5rem;
-    margin-left: 0.25rem;
-  }
-  button {
-    height: 48px;
-    border-radius: 6px;
-    font-size: 18px;
-    background-color: var(--default-offset-background-color);
-    color: #fff;
-    border: 0;
-    width: 100%;
-    cursor: pointer;
+  button:not(.react-datepicker__navigation) {
+    @include button-base;
+
+    color: $white;
+    background-image: linear-gradient(
+      135deg,
+      var(--default-offset-background-color) 40%,
+      var(--default-offset-background-color--hover)
+    );
+    border: none;
+    font-size: 1.25rem;
+    font-weight: 500;
+
+    @include button-base--hover;
     &:hover {
       background-color: var(--default-offset-background-color--hover);
-      color: white;
+      color: $white;
     }
   }
   .info {
-    margin-bottom: 0.5rem;
+    margin-top: 0.5rem;
   }
-  .muted {
-    font-size: 0.75rem;
-    color: grey;
-  }
-  .time-select-container {
-    display: flex;
-    flex-flow: row nowrap;
-    justify-content: center;
-    margin: 2rem 0;
-    gap: 1rem;
-    @media screen and (min-width: 768px) {
-      justify-content: flex-start;
-      margin-left: 1rem 0;
-    }
-  }
+  .number-of-covers-select,
   .time-select {
-    width: 100%;
+    @include form-input;
+
     padding: 0.75rem 1rem;
     &:hover {
       cursor: pointer;
@@ -186,7 +272,7 @@
     border-radius: 50%;
     display: block;
     stroke-width: 2;
-    stroke: #fff;
+    stroke: $white;
     stroke-miterlimit: 10;
     margin: 10% auto;
     box-shadow: inset 0px 0px 0px green;
@@ -197,7 +283,7 @@
       stroke-dashoffset: 166;
       stroke-width: 2;
       stroke-miterlimit: 10;
-      stroke: green;
+      stroke: $green;
       fill: none;
       animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
     }
@@ -225,7 +311,27 @@
   }
   @keyframes fill {
     100% {
-      box-shadow: inset 0px 0px 0px 30px green;
+      box-shadow: inset 0px 0px 0px 30px $green;
+    }
+  }
+}
+
+.widget__container form {
+  .react-datepicker__input-container {
+    .react-datepicker__calendar-icon {
+      padding: 15px 0.75rem;
+    }
+    input {
+      width: 100%;
+      padding: 1rem 2.25rem;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+      border-bottom: 2px solid $green;
+      border-radius: 0;
+      &:hover {
+        cursor: pointer;
+      }
     }
   }
 }

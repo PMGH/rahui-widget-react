@@ -1,0 +1,12 @@
+@import "./variables.scss";
+
+.muted {
+  font-size: 0.75rem;
+  color: $grey-50 !important;
+}
+
+.styled-link {
+  text-decoration: none;
+  font-weight: bold;
+  color: $pink !important;
+}

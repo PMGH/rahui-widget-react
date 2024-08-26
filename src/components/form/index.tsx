@@ -1,203 +1,292 @@
-import { formattedTodayDate, timeOptionsAsHtml } from "../../helpers";
+import { ReactNode, useState } from "react";
+import DatePicker from "react-datepicker";
+import { coversOptionsAsHtml, timeOptionsAsHtml } from "../../helpers";
 import Select from "./Select";
+import PoweredBy from "../powered-by";
+import BookingConfirmation from "../booking-confirmation";
 
+import "react-datepicker/dist/react-datepicker.css";
 import "./form.scss";
 
+import * as calendarSvg from "../../assets/calendar.svg";
+
+import { RahuiBackend } from "../../backend/server";
+import { BookingPayload } from "../../backend/types";
+
 type FormProps = {
+  apiKey?: string;
   buttonText?: string;
   formClass?: string;
-  datePickerHiddenInputId?: string;
-  datePickerId?: string;
-  heading?: string;
+  headingText?: string;
+  localServerBaseUrl?: string;
   maxCoversPerBooking?: number;
-  timePickerId?: string;
   widgetPreview?: boolean;
 };
 
+interface FormElements extends HTMLFormControlsCollection {
+  "booking[number_of_covers]": HTMLInputElement;
+  "booking[date]": HTMLInputElement;
+  "booking[time]": HTMLInputElement;
+  "customer[first_name]"?: HTMLInputElement;
+  "customer[last_name]"?: HTMLInputElement;
+  "customer[email]": HTMLInputElement;
+  "customer[phone]"?: HTMLInputElement;
+  "booking[notes]"?: HTMLInputElement;
+}
+
+interface FormSubmission extends HTMLFormElement {
+  readonly elements: FormElements;
+}
+
 const Form = ({
+  apiKey = "",
   buttonText = "Book",
   formClass = "",
-  datePickerHiddenInputId = "hidden-datepicker-input-id",
-  datePickerId = "datepicker-id",
-  heading = "Reserve a table",
+  headingText = "Reserve a table",
+  localServerBaseUrl,
   maxCoversPerBooking,
-  timePickerId = "timepicker-id",
   widgetPreview = false,
-}: FormProps) => (
-  <section id="rahui-widget" className="widget__container">
-    <header className="widget__header">
-      <h3>{heading}</h3>
-    </header>
+}: FormProps) => {
+  const formatDate = (date: Date) => {
+    const locale = Intl.DateTimeFormat().resolvedOptions().locale;
+    return new Intl.DateTimeFormat(locale).format(date);
+  };
+  const defaultErrorMessage = "Sorry something went wrong, please try again.";
 
-    <div id="error-message">Sorry, something went wrong. Please try again.</div>
+  const [numberOfCovers, setNumberOfCovers] = useState(1);
+  const [date, setDate] = useState(formatDate(new Date()));
+  const [time, setTime] = useState("06:00");
+  const [firstNameRequired, setFirstNameRequired] = useState(true);
+  const [lastNameRequired, setLastNameRequired] = useState(true);
+  const [isError, setIsError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(defaultErrorMessage);
+  const [isBookingConfirmed, setIsBookingConfirmed] = useState(false);
 
-    <div id="confirmation-message-container">
-      <div className="wrapper">
-        <svg
-          className="checkmark"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 52 52"
-        >
-          {" "}
-          <circle
-            className="checkmark__circle"
-            cx="26"
-            cy="26"
-            r="25"
-            fill="none"
-          />{" "}
-          <path
-            className="checkmark__check"
-            fill="none"
-            d="M14.1 27.2l7.1 7.2 16.7-16.8"
-          />
-        </svg>
-      </div>
-      <h3 id="confirmation-message">Booking confirmed!</h3>
-      <div id="confirmation-booking-container">
-        <span id="confirmation-booking-number-of-covers"></span>
-        <span id="confirmation-booking-datetime"></span>
-      </div>
-    </div>
+  const isPastDate = (date: Date) => {
+    const now = new Date();
+    const comparableDatetimeNow = new Date(now.setHours(0, 0, 0));
+    const comparableDatetime = new Date(date.setHours(15, 0, 0));
+    return comparableDatetime.getTime() > comparableDatetimeNow.getTime();
+  };
 
-    <form className={formClass}>
-      <input
-        type="hidden"
-        id="widget-submission"
-        name="widget-submission"
-        value="true"
-      ></input>
-      <div className="form__field__group">
-        <div className="form__field form-group-left">
-          <div className="form__field form__field__required">
-            <div className="form__field__required">
-              <label
-                id="number_of_covers_label"
-                htmlFor="booking[number_of_covers]"
-              >
-                Guests{" "}
-                {maxCoversPerBooking ? ` (Max: ${maxCoversPerBooking})` : ""}
-              </label>
-              <span className="required-field-symbol">*</span>
-            </div>
-            <input
-              type="number"
-              id="number_of_covers"
-              name="booking[number_of_covers]"
-              placeholder="1"
-              min="1"
-              value="2"
-              required
-            />
-          </div>
-          <div className="form__field__required">
-            <input
-              type="hidden"
-              id={datePickerHiddenInputId}
-              name="booking[date]"
-              required
-              value={formattedTodayDate}
-            ></input>
-          </div>
-          <div className="time-select-container">
+  const dateFromString = (date: string) => {
+    const day = parseInt(date.split("/")[0]);
+    const month = parseInt(date.split("/")[1]) - 1; // zero index months
+    const year = parseInt(date.split("/")[2]);
+    return new Date(year, month, day);
+  };
+
+  const getSelectedDatetime = (): Date => {
+    const newDate = dateFromString(date);
+    const hours = time.split(":")[0];
+    const mins = time.split(":")[1];
+    const datetime = new Date(
+      newDate.setHours(parseInt(hours), parseInt(mins), 0)
+    );
+    return datetime;
+  };
+
+  const handleFirstNameChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const hasFirstNameValue = Boolean(event?.target?.value?.length);
+    setLastNameRequired(!hasFirstNameValue);
+  };
+
+  const handleLastNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const hasLastNameValue = Boolean(event?.target?.value?.length);
+    setFirstNameRequired(!hasLastNameValue);
+  };
+
+  const handleFormSubmit = async (event: React.FormEvent<FormSubmission>) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const datetime = getSelectedDatetime();
+
+    if (!datetime || isNaN(datetime?.getTime())) {
+      setErrorMessage("Ensure you have selected a date and time");
+      setIsError(true);
+    }
+
+    const payload: BookingPayload = {
+      "widget-submission": true,
+      booking: {
+        number_of_covers: form.elements["booking[number_of_covers]"].value,
+        datetime: datetime.toUTCString(),
+        notes: form.elements["booking[notes]"]?.value || "",
+      },
+      customer: {
+        first_name: form.elements["customer[first_name]"]?.value || "",
+        last_name: form.elements["customer[last_name]"]?.value || "",
+        email: form.elements["customer[email]"]?.value || "",
+        phone: form.elements["customer[phone]"]?.value || "",
+      },
+    };
+
+    const Server = new RahuiBackend({
+      apiKey,
+      localServerBaseUrl,
+    });
+    await Server.postBooking({
+      payload,
+      beforeRequest: resetErrorMessage,
+      onSuccess: handlePostBookingSuccess,
+      onFailure: handlePostBookingFailure,
+    });
+  };
+
+  const resetErrorMessage = () => {
+    setErrorMessage(defaultErrorMessage);
+    setIsError(false);
+  };
+
+  const handlePostBookingSuccess = () => {
+    setIsBookingConfirmed(true);
+  };
+
+  const handlePostBookingFailure = (error: any) => {
+    setErrorMessage(error);
+    setIsError(true);
+  };
+
+  return (
+    <section id="rahui-widget" className="widget__container">
+      <header className="widget__header">
+        <h3>{headingText}</h3>
+      </header>
+
+      {isError && <div id="error-message">{errorMessage}</div>}
+
+      {isBookingConfirmed && (
+        <BookingConfirmation
+          numberOfCovers={numberOfCovers}
+          datetime={getSelectedDatetime()}
+        />
+      )}
+
+      {!isBookingConfirmed && (
+        <form className={formClass} onSubmit={handleFormSubmit}>
+          <input
+            type="hidden"
+            id="widget-submission"
+            name="widget-submission"
+            defaultValue="true"
+          ></input>
+          <div className="form-group-1">
             <Select
-              id={timePickerId}
-              name="booking[time]"
+              id="number_of_covers"
+              className="main-booking-input main-booking-input-1 number-of-covers-select"
+              name="booking[number_of_covers]"
               required
-              className="time-select"
-              options={timeOptionsAsHtml({
-                openAt: 6,
-                closeAt: 20,
+              options={coversOptionsAsHtml({
+                max: maxCoversPerBooking || 15,
               })}
+              value={numberOfCovers}
+              onChange={(event) =>
+                setNumberOfCovers(parseInt(event.target.value))
+              }
             ></Select>
+            <div className="datetime-input-container">
+              <DatePicker
+                id="datepicker-id"
+                className="main-booking-input main-booking-input-2"
+                name="booking[date]"
+                selected={dateFromString(date)}
+                onChange={(date) => date && setDate(formatDate(date))}
+                dateFormat="dd/MM/yyyy"
+                filterDate={isPastDate}
+                showIcon
+                icon={calendarSvg as unknown as ReactNode}
+              />
+              <Select
+                id="timepicker-id"
+                className="main-booking-input main-booking-input-3 time-select"
+                name="booking[time]"
+                required
+                options={timeOptionsAsHtml({
+                  openAt: 6,
+                  closeAt: 20,
+                })}
+                onChange={(event) => setTime(event.target.value)}
+              ></Select>
+            </div>
           </div>
-        </div>
 
-        <div className="form-group-right">
-          <section className="customer-details">
-            <div className="form__field__group">
+          <div className="form-group-2">
+            <section className="customer-details">
+              <div className="form__field__group">
+                <div className="form__field">
+                  <input
+                    type="text"
+                    id="customer_first_name"
+                    name="customer[first_name]"
+                    placeholder={
+                      firstNameRequired
+                        ? "Enter your first name *"
+                        : "Enter your first name"
+                    }
+                    required={firstNameRequired}
+                    onChange={handleFirstNameChange}
+                  />
+                </div>
+                <div className="form__field last-name">
+                  <input
+                    type="text"
+                    id="customer_last_name"
+                    name="customer[last_name]"
+                    placeholder={
+                      lastNameRequired
+                        ? "Enter your last name *"
+                        : "Enter your last name"
+                    }
+                    required={lastNameRequired}
+                    onChange={handleLastNameChange}
+                  />
+                </div>
+              </div>
               <div className="form__field">
-                <div className="form__field__required">
-                  <label htmlFor="customer[first_name]">First name</label>
-                  <span
-                    className="required-field-symbol"
-                    id="customer_first_name_required_symbol"
-                  >
-                    *
-                  </span>
-                </div>
                 <input
-                  type="text"
-                  id="customer_first_name"
-                  name="customer[first_name]"
-                  placeholder="Enter your first name"
+                  type="email"
+                  id="email"
+                  name="customer[email]"
+                  placeholder="Enter your email address *"
                   required
                 />
+                <p className="info muted">
+                  We send the booking confirmation to this email address
+                </p>
               </div>
-              <div className="form__field last-name">
-                <div className="form__field__required">
-                  <label htmlFor="customer[last_name]">Last name</label>
-                  <span
-                    className="required-field-symbol"
-                    id="customer_last_name_required_symbol"
-                  >
-                    *
-                  </span>
-                </div>
+              <div className="form__field">
                 <input
-                  type="text"
-                  id="customer_last_name"
-                  name="customer[last_name]"
-                  placeholder="Enter your last name"
-                  required
+                  type="phone"
+                  id="phone"
+                  name="customer[phone]"
+                  placeholder="Enter your phone number"
                 />
+                <p className="info muted">
+                  We may use this phone number to contact you about your booking
+                </p>
               </div>
-            </div>
+            </section>
             <div className="form__field">
-              <div className="form__field__required">
-                <label htmlFor="customer[email]">Email</label>
-                <span className="required-field-symbol">*</span>
-              </div>
-              <p className="info muted">
-                We send the booking confirmation to this email address
-              </p>
-              <input
-                type="email"
-                id="email"
-                name="customer[email]"
-                placeholder="Enter your email address"
-              />
+              <textarea
+                id="notes"
+                name="booking[notes]"
+                placeholder="Enter any additional notes"
+                rows={6}
+              ></textarea>
             </div>
-            <div className="form__field">
-              <label htmlFor="customer[phone]">Phone number</label>
-              <p className="info muted">
-                We may use this to contact you about your booking
-              </p>
-              <input
-                type="phone"
-                id="phone"
-                name="customer[phone]"
-                placeholder="Enter your phone number"
-              />
-            </div>
-          </section>
-          <div className="form__field">
-            <label htmlFor="booking[notes]">Notes</label>
-            <textarea
-              id="notes"
-              name="booking[notes]"
-              placeholder="Enter any additional notes"
-              rows={6}
-            ></textarea>
           </div>
-        </div>
-      </div>
 
-      <button type="submit" disabled={widgetPreview}>
-        {buttonText}
-      </button>
-    </form>
-  </section>
-);
+          <button type="submit" disabled={widgetPreview}>
+            {buttonText}
+          </button>
+        </form>
+      )}
+
+      <PoweredBy />
+    </section>
+  );
+};
 
 export default Form;

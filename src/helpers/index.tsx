@@ -4,11 +4,6 @@ export const padWithZeros = (number: number) => {
   return number < 10 ? String(number).padStart(2, "0") : String(number);
 };
 
-const today = new Date();
-export const formattedTodayDate = `${today.getFullYear()}-${padWithZeros(
-  today.getMonth() + 1
-)}-${padWithZeros(today.getDate())}`;
-
 export const range = ({
   start,
   end,
@@ -45,7 +40,21 @@ export const timeOptionsAsHtml = ({
       const hourStr = padWithZeros(hour);
       const minStr = padWithZeros(min);
       const timeStr = `${hourStr}:${minStr}`;
-      return <option value={timeStr}>{timeStr}</option>;
+      return (
+        <option key={timeStr} value={timeStr}>
+          {timeStr}
+        </option>
+      );
     });
+  });
+};
+
+export const coversOptionsAsHtml = ({ max }: { max: number }): ReactNode[] => {
+  return range({ start: 1, end: max + 1 }).map((value) => {
+    return (
+      <option key={value} value={value}>
+        {value} {value < 2 ? "guest" : "guests"}
+      </option>
+    );
   });
 };
