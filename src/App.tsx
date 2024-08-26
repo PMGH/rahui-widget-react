@@ -18,7 +18,7 @@ function App() {
 
   window.RahuiWidget = Widget;
 
-  return <></>;
+  return <div id="rahui-widget-react-app"></div>;
 }
 
 export default App;
