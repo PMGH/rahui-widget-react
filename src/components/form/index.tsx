@@ -185,7 +185,9 @@ const Form = ({
                 max: maxCoversPerBooking || 15,
               })}
               value={numberOfCovers}
-              onChange={setNumberOfCovers}
+              onChange={(event) =>
+                setNumberOfCovers(parseInt(event.target.value))
+              }
             ></Select>
             <div className="datetime-input-container">
               <DatePicker
