@@ -1,9 +1,8 @@
 import Form from "../components/form";
 import { WidgetConfig, WidgetSettings } from "../types/types";
 import { RahuiBackend } from "../backend/server";
-import { Component } from "react";
-import ReactDOM from "react-dom/client";
-import React from "react";
+import { Component, StrictMode } from "react";
+import { createRoot } from "react-dom/client";
 
 import "../styling/common.scss";
 
@@ -14,7 +13,6 @@ class Widget extends Component {
   defaultRequestHeaders: {};
   apiServer: RahuiBackend;
   // User Defined Widget Settings
-  root = ReactDOM.createRoot(document.getElementById("root") as Element);
   rootElementId = "";
   widgetPreview = false;
   headingText = "";
@@ -40,7 +38,6 @@ class Widget extends Component {
       widgetPreview,
     });
 
-    this.root;
     this.rootElementId;
     this.apiKey = apiKey;
     this.apiBaseUrl = localServerBaseUrl || "https://www.rahui-booking.com";
@@ -91,8 +88,8 @@ class Widget extends Component {
   };
 
   renderWidget() {
-    this.root.render(
-      <React.StrictMode>
+    createRoot(document.getElementById(this.rootElementId || "root")!).render(
+      <StrictMode>
         <Form
           apiKey={this.apiKey}
           buttonText={this.buttonText}
@@ -102,7 +99,7 @@ class Widget extends Component {
           maxCoversPerBooking={this.maxCoversPerBooking}
           widgetPreview={this.widgetPreview}
         ></Form>
-      </React.StrictMode>
+      </StrictMode>
     );
   }
 }

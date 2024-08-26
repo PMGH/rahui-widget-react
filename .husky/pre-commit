@@ -1,2 +1,2 @@
 echo "Husky precommit running"
-yarn build && git add dist/bundle.js
+yarn build && git add dist
