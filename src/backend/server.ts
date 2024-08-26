@@ -45,7 +45,7 @@ export class RahuiBackend {
       } else {
         const body = await response.json();
         if (body.errors) {
-          onFailure && onFailure(body.errors[0]);
+          onFailure && onFailure(body.errors.base[0]);
         }
         return body;
       }
@@ -71,7 +71,7 @@ export class RahuiBackend {
     } else {
       const body = await response.json();
       if (body.errors) {
-        onFailure && onFailure(body.errors[0]);
+        onFailure && onFailure(body.errors.base[0]);
       }
       return body;
     }

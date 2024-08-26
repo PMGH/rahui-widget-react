@@ -51,6 +51,7 @@ const Form = ({
     const locale = Intl.DateTimeFormat().resolvedOptions().locale;
     return new Intl.DateTimeFormat(locale).format(date);
   };
+  const defaultErrorMessage = "Sorry something went wrong, please try again.";
 
   const [numberOfCovers, setNumberOfCovers] = useState(1);
   const [date, setDate] = useState(formatDate(new Date()));
@@ -58,9 +59,7 @@ const Form = ({
   const [firstNameRequired, setFirstNameRequired] = useState(true);
   const [lastNameRequired, setLastNameRequired] = useState(true);
   const [isError, setIsError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(
-    "Sorry something went wrong, please try again."
-  );
+  const [errorMessage, setErrorMessage] = useState(defaultErrorMessage);
   const [isBookingConfirmed, setIsBookingConfirmed] = useState(false);
 
   const isPastDate = (date: Date) => {
@@ -138,16 +137,17 @@ const Form = ({
   };
 
   const resetErrorMessage = () => {
-    console.log("resetErrorMessage");
+    setErrorMessage(defaultErrorMessage);
+    setIsError(false);
   };
 
   const handlePostBookingSuccess = () => {
-    console.log("handlePostBookingSuccess");
     setIsBookingConfirmed(true);
   };
 
   const handlePostBookingFailure = (error: any) => {
-    console.log("handlePostBookingFailure", { error });
+    setErrorMessage(error);
+    setIsError(true);
   };
 
   console.log({ date, time, numberOfCovers, isBookingConfirmed });
