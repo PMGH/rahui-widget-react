@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rahui Widget Build Preview</title>
+  </head>
+  <body>
+    <h1>Rahui Widget Build Preview</h1>
+    <div id="root"></div>
+    <script type="text/javascript" src="./bundle.js"></script>
+    <script>
+      console.log({ windowRahuiWidget: window.RahuiWidget });
+
+      new window.RahuiWidget({
+        apiKey: "b7511851-0a8b-4ee4-b14c-09e33d453cfd",
+        localServerBaseUrl: "http://localhost:3001",
+      });
+    </script>
+  </body>
+</html>
