@@ -77,6 +77,16 @@ const Form = ({
     return new Date(year, month, day);
   };
 
+  const getSelectedDatetime = (): Date => {
+    const newDate = dateFromString(date);
+    const hours = time.split(":")[0];
+    const mins = time.split(":")[1];
+    const datetime = new Date(
+      newDate.setHours(parseInt(hours), parseInt(mins), 0)
+    );
+    return datetime;
+  };
+
   const handleFirstNameChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -138,20 +148,6 @@ const Form = ({
 
   const handlePostBookingFailure = (error: any) => {
     console.log("handlePostBookingFailure", { error });
-  };
-
-  const getSelectedDatetime = (): Date => {
-    // Date
-    const newDate = dateFromString(date);
-    debugger;
-
-    // Time
-    const hours = time.split(":")[0];
-    const mins = time.split(":")[1];
-    const datetime = new Date(
-      newDate.setHours(parseInt(hours), parseInt(mins), 0)
-    );
-    return datetime;
   };
 
   console.log({ date, time, numberOfCovers, isBookingConfirmed });
