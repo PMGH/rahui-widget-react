@@ -3,7 +3,7 @@
 :root {
   --default-input-color: #{$grey-50};
   --default-font-color: #{$black};
-  --default-background-color: #{$white};
+  --default-background-color: white;
   --default-offset-background-color: black;
   --default-offset-background-color--hover: #{$black};
   --date-selected-background-color: var(--default-offset-background-color);
@@ -123,11 +123,11 @@
       flex-direction: column;
       width: 100%;
       margin-bottom: 3rem;
-      box-shadow: $box-shadow-button;
       background: var(--default-background-color);
       @media screen and (min-width: $tablet) {
         flex-direction: row;
         align-items: flex-end;
+        box-shadow: $box-shadow-button;
       }
       .datetime-input-container {
         width: 100%;
