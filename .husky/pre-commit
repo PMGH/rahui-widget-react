@@ -1,5 +1,2 @@
-#!/bin/sh
-. "$(dirname "$0")/_/husky.sh"
-
 echo "Husky precommit running"
 yarn build && git add dist/bundle.js
