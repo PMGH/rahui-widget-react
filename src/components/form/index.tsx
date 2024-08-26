@@ -122,7 +122,6 @@ const Form = ({
         phone: form.elements["customer[phone]"]?.value || "",
       },
     };
-    console.log({ form, payload });
 
     const Server = new RahuiBackend({
       apiKey,
@@ -149,8 +148,6 @@ const Form = ({
     setErrorMessage(error);
     setIsError(true);
   };
-
-  console.log({ date, time, numberOfCovers, isBookingConfirmed });
 
   return (
     <section id="rahui-widget" className="widget__container">

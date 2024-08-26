@@ -78,20 +78,11 @@ class Widget extends Component {
       max_covers_per_booking,
       root_element_id,
     } = settings as WidgetSettings;
-    console.log({
-      _this: this,
-      settings,
-      button_text,
-      heading_text,
-      max_covers_per_booking,
-      root_element_id,
-    });
     this.buttonText = button_text || this.buttonText;
     this.headingText = heading_text || this.headingText;
     this.rootElementId =
       this.rootElementIdOverride || root_element_id || this.rootElementId;
     this.maxCoversPerBooking = max_covers_per_booking;
-
     this.renderWidget();
   };
 
