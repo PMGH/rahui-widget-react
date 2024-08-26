@@ -17,6 +17,8 @@ function App() {
   }
 
   window.RahuiWidget = Widget;
+
+  return <></>;
 }
 
 export default App;
